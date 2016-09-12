@@ -1,0 +1,50 @@
+html,body{
+    position:relative;
+    height:100%;
+    width:100%;
+    background-color:black;
+    color:lightgreen;
+};
+
+.container{
+    position:relative;
+    width:90%;
+    padding:0;
+    text-align:center;
+    margin:100px auto 0 auto;
+}
+
+.gameboard{
+    width:800px;
+    height:800px;
+    margin: 150px auto;
+}
+
+.gameboard ul{
+    position:relative;
+    left:200px;
+    padding:0;
+    margin:0;
+}
+
+.gridrow li{
+    display:inline-block;
+    border-right:2px solid lightgreen;
+    border-bottom:2px solid lightgreen;
+    height:200px;
+    width:200px;
+    margin:0;
+    padding:0;
+}
+
+#y1x3,#y2x3,#y3x3{
+    border-right:0;
+}
+
+#y3x1,#y3x2,#y3x3{
+    border-bottom:0;
+}
+
+.gridrow{
+    padding:0;
+}
