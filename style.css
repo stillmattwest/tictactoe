@@ -22,9 +22,9 @@ html,body{
 
 .gameboard ul{
     position:relative;
-    left:200px;
     padding:0;
     margin:0;
+    left:15%;
 }
 
 .gridrow li{
@@ -33,8 +33,12 @@ html,body{
     border-bottom:2px solid lightgreen;
     height:200px;
     width:200px;
+    max-height:200px;
+    max-width:200px;
     margin:0;
     padding:0;
+    overflow:hidden;
+    text-align: center;
 }
 
 #y1x3,#y2x3,#y3x3{
@@ -47,4 +51,15 @@ html,body{
 
 .gridrow{
     padding:0;
+}
+
+.square{
+    z-index: 5;
+    overflow:hidden;
+    font-family:Arial, Helvetica, sans-serif;
+    font-size:170px;
+}
+
+.square p{
+    margin-top:5px;
 }
