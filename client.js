@@ -52,14 +52,12 @@ $('document').ready(function () {
         $('#' + square).children('.square').html('<p>' + icon + '</p>');
         // add square to occupied array, along with who occupied it
         gameState.grid[square].occupied = player;
-        // check for tie
-
         // check for win
         if (checkWin(player, gameState.grid)) {
             console.log(player + ' wins!');
             gameState.gameOver = true;
         }
-        gridEval(square, player);
+        valueDiags();
     };
 
     //***************
@@ -69,7 +67,7 @@ $('document').ready(function () {
     function computerTurn() {
         // don't do anything if game is over
         if (gameState.gameOver === true) { return; };
-        //wait two seconds before making a move
+        //wait a second before making a move
         setTimeout(function () {
             var finished = false;
             // Computer gets possible squares sorted by value
@@ -87,7 +85,6 @@ $('document').ready(function () {
                     finsihed = true;
                     return;
                 }
-
             }
             if (finished) { return; }
             // If computer can't win, it checks to see if opponent has possible win. If so, it blocks the move
@@ -106,9 +103,6 @@ $('document').ready(function () {
             gameState.playersTurn = true;
         }, 1000);
     }
-
-
-
 
     //***************
     // GAME EVALUATION FUNCTIONS
@@ -132,26 +126,6 @@ $('document').ready(function () {
 
     }
 
-    // gridEval assigns value to squares based on board state
-
-    function gridEval(square, player) {
-        console.log('re-evaluating');
-        var row = square[1];
-        var col = square[3];
-        // loop through grid and check for match of row or column on key. If match, increment value
-        for (var key in gameState.grid) {
-            if (key[1] === row || key[3] === col) {
-                if (!checkOccupied(square)) {
-                    gameState.grid[key].value++;
-                }
-            }
-        }
-        // if square is a corner or center, increment diagonal win squares
-        if ((row == 1 && col == 3) || (row == 3 && col == 1) || (row == col)) {
-            valueDiags();
-        }
-    }
-
     function valueDiags() {
         // check for 3 occupied corners + center, and devalue corners if true
         var occupiedDiags = 0;
@@ -168,16 +142,7 @@ $('document').ready(function () {
                 }
             }
         }
-
-        if (occupiedDiags < 4) {
-            console.log('corners are valuable');
-            gameState.grid.y1x1.value++;
-            gameState.grid.y3x1.value++;
-            gameState.grid.y1x3.value++;
-            gameState.grid.y3x3.value++;
-            gameState.grid.y2x2.value++;
-        } else {
-            console.log('I hate corners');
+        if (occupiedDiags > 2) {
             gameState.grid.y1x1.value = 0;
             gameState.grid.y3x1.value = 0;
             gameState.grid.y1x3.value = 0;
@@ -199,14 +164,12 @@ $('document').ready(function () {
     // checks a move to see if it results in a win
     function detectWinningMove(square, player) {
         // if sqaure is occupied, disregard
-        if (checkOccupied(square)) {
-            return;
-        }
-        // jQuery deep copy
+        // if (checkOccupied(square)) {
+        //     return;
+        // }
         var grid = $.extend(true, {}, gameState.grid);
         grid[square].occupied = player;
         if (checkWin(player, grid)) {
-            console.log(player + ' can win at ' + square);
             return true;
         } else {
             return false;
