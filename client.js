@@ -18,10 +18,11 @@ $('document').ready(function () {
     // ******************
 
     var gameState = {
-        grid: BaseGrid,
+        grid: $.extend(true, {}, BaseGrid),
         playersTurn: true,
         playerIcon: 'X',
-        computerIcon: 'O'
+        computerIcon: 'O',
+        gameOver: false
     }
 
     //************
@@ -30,10 +31,14 @@ $('document').ready(function () {
 
     // allow player to place an icon on the grid
     $('.gridrow li').click(function () {
-        if (gameState.playersTurn === true) {
+        if (gameState.playersTurn === true && gameState.gameOver === false) {
             var square = this.id;
             var piece = gameState.playerIcon;
-            placePiece(square, piece, 'player');
+            if (!checkOccupied(square)) {
+                placePiece(square, piece, 'player');
+                gameState.playersTurn = false;
+                computerTurn();
+            }
         }
     });
 
@@ -46,8 +51,14 @@ $('document').ready(function () {
     function placePiece(square, icon, player) {
         $('#' + square).children('.square').html('<p>' + icon + '</p>');
         // add square to occupied array, along with who occupied it
-        gameState.grid[square].occupied = 'player';
-        checkWin('player', gameState.grid);
+        gameState.grid[square].occupied = player;
+        // check for tie
+
+        // check for win
+        if (checkWin(player, gameState.grid)) {
+            console.log(player + ' wins!');
+            gameState.gameOver = true;
+        }
         gridEval(square, player);
     };
 
@@ -55,14 +66,40 @@ $('document').ready(function () {
     // GAME AI MOVE DECISIONS
     //***************
 
-    // Computer gets possible squares sorted by value
-    var possibleMoves = sortGrid(gameState.grid);
-    // Computer checks to see if it can win. If so, it does.
-    
-    // If it can't win, it checks to see if opponent has possible win
+    function computerTurn() {
+        // don't do anything if game is over
+        if (gameState.gameOver === true) { return; };
+        //wait two seconds before making a move
+        setTimeout(function () {
+            var finished = false;
+            // Computer gets possible squares sorted by value
+            var possibleMoves = sortGrid(gameState.grid);
+            // Computer checks to see if it can win. If so, it does.
+            for (var i = 0; i < possibleMoves.length; i++) {
+                if (detectWinningMove(possibleMoves[i][0], 'computer')) {
+                    placePiece(possibleMoves[i][0], gameState.computerIcon, 'computer');
+                    finsihed = true;
+                    return;
+                }
 
-    // If not, it takes the highest value square
+            }
+            if (finished) { return; }
+            // If computer can't win, it checks to see if opponent has possible win. If so, it blocks the move
+            for (var i = 0; i < possibleMoves.length; i++) {
+                if (detectWinningMove(possibleMoves[i][0], 'player')) {
+                    placePiece(possibleMoves[i][0], gameState.computerIcon, 'computer');
+                    finsihed = true;
+                    gameState.playersTurn = true;
+                    return;
+                }
 
+            }
+            if (finished) { return; }
+            // If not, it takes the highest value square
+            placePiece(possibleMoves[0][0], gameState.computerIcon, 'computer');
+            gameState.playersTurn = true;
+        }, 1000);
+    }
 
 
 
@@ -74,21 +111,16 @@ $('document').ready(function () {
     // sort gameState.gridValue based on values, eliminates occupied squares from result
     function sortGrid(grid) {
         var sortable = [];
-        // change grid into array
+        // change grid into array, ignore occupied squares
         for (var key in grid) {
-            sortable.push([key, grid[key].value]);
+            if (!grid[key].occupied) {
+                sortable.push([key, grid[key].value]);
+            }
         }
         // sort array by value
         sortable.sort(function (a, b) {
             return (b[1] - a[1]);
         });
-        // remove occupied squares from results
-        sortable.forEach(function (element, index) {
-            var square = element[0];
-            if (gameState.grid[square].occupied) {
-                sortable.splice(index, 1);
-            }
-        })
         // return array
         return sortable;
 
@@ -102,22 +134,16 @@ $('document').ready(function () {
         // loop through grid and check for match of row or column on key. If match, increment value
         for (var key in gameState.grid) {
             if (key[1] === row || key[3] === col) {
-                if (gameState.grid[key].occupied === false) {
+                if (!checkOccupied(square)) {
                     gameState.grid[key].value++;
                 }
             }
         }
         // if square is a corner or center, increment diagonal win squares
         if ((row == 1 && col == 3) || (row == 3 && col == 1) || (row == col)) {
-            valueDiags();
-        }
-        //  for testing
-        var result = sortGrid(gameState.grid);
-        for (var i = 0; i < result.length - 1; i++) {
-            if (detectWinningMove(result[i][0], player)) {
-                return;
+            if (gameState.grid[square].occupied === false) {
+                valueDiags();
             }
-
         }
     }
 
@@ -130,13 +156,26 @@ $('document').ready(function () {
 
     }
 
+    // check if square is occupied
+    function checkOccupied(square) {
+        if (gameState.grid[square].occupied !== false) {
+            return true;
+        } else {
+            return;
+        }
+    }
+
     // checks a move to see if it results in a win
     function detectWinningMove(square, player) {
+        // if sqaure is occupied, disregard
+        if (checkOccupied(square)) {
+            return;
+        }
         // jQuery deep copy
-        var grid = $.extend(true,{},gameState.grid);
+        var grid = $.extend(true, {}, gameState.grid);
         grid[square].occupied = player;
         if (checkWin(player, grid)) {
-            console.log('I can win at ' + square);
+            console.log(player + ' can win at ' + square);
             return true;
         } else {
             return false;
