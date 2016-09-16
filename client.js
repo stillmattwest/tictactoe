@@ -52,7 +52,23 @@ $('document').ready(function () {
     };
 
     //***************
-    // GAME AI FUNCTIONS
+    // GAME AI MOVE DECISIONS
+    //***************
+
+    // Computer gets possible squares sorted by value
+    var possibleMoves = sortGrid(gameState.grid);
+    // Computer checks to see if it can win. If so, it does.
+    
+    // If it can't win, it checks to see if opponent has possible win
+
+    // If not, it takes the highest value square
+
+
+
+
+
+    //***************
+    // GAME EVALUATION FUNCTIONS
     //***************
 
     // sort gameState.gridValue based on values, eliminates occupied squares from result
@@ -116,14 +132,13 @@ $('document').ready(function () {
 
     // checks a move to see if it results in a win
     function detectWinningMove(square, player) {
-        console.log('checking square:' + square);
-        var grid = gameState.grid;
+        // jQuery deep copy
+        var grid = $.extend(true,{},gameState.grid);
         grid[square].occupied = player;
         if (checkWin(player, grid)) {
             console.log('I can win at ' + square);
             return true;
         } else {
-            grid[square].occupied = false;
             return false;
         }
     }
