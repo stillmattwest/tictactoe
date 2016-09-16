@@ -1,6 +1,9 @@
 $('document').ready(function () {
 
-    // set base values for grid squares
+    // ******************
+    // GAMESTATE
+    // ******************
+
     var BaseGrid = {
         y1x1: { value: 2, occupied: false },
         y1x2: { value: 1, occupied: false },
@@ -12,10 +15,6 @@ $('document').ready(function () {
         y3x2: { value: 1, occupied: false },
         y3x3: { value: 2, occupied: false }
     };
-
-    // ******************
-    // GAMESTATE
-    // ******************
 
     var gameState = {
         grid: $.extend(true, {}, BaseGrid),
@@ -61,7 +60,7 @@ $('document').ready(function () {
     };
 
     //***************
-    // GAME AI MOVE DECISIONS
+    // GAME AI 
     //***************
 
     function computerTurn() {
@@ -98,15 +97,11 @@ $('document').ready(function () {
 
             }
             if (finished) { return; }
-            // If not, it takes highest value move
+            // If not, it takes highest value move remaining
             placePiece(possibleMoves[0][0], gameState.computerIcon, 'computer');
             gameState.playersTurn = true;
         }, 1000);
     }
-
-    //***************
-    // GAME EVALUATION FUNCTIONS
-    //***************
 
     // sort gameState.gridValue based on values, eliminates occupied squares from result
     function sortGrid(grid) {
@@ -127,7 +122,7 @@ $('document').ready(function () {
     }
 
     function valueDiags() {
-        // check for 3 occupied corners + center, and devalue corners if true
+        // check for 3 occupied corners + center, and devalue them if true
         var occupiedDiags = 0;
         var square;
         var row;
@@ -163,10 +158,6 @@ $('document').ready(function () {
 
     // checks a move to see if it results in a win
     function detectWinningMove(square, player) {
-        // if sqaure is occupied, disregard
-        // if (checkOccupied(square)) {
-        //     return;
-        // }
         var grid = $.extend(true, {}, gameState.grid);
         grid[square].occupied = player;
         if (checkWin(player, grid)) {
