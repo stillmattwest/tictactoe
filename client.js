@@ -97,10 +97,15 @@ $('document').ready(function () {
 
             }
             if (finished) { return; }
-            // If not, it takes highest value move remaining
-            placePiece(possibleMoves[0][0], gameState.computerIcon, 'computer');
+            // If not, it select randomly from the highest value moves
+            var bestMoves = getBestMoves(possibleMoves);
+            var max=bestMoves.length;
+            var num = getRandom(1,max);
+            console.log(num);
+            console.log(bestMoves[num][0]);
+            placePiece(bestMoves[num][0], gameState.computerIcon, 'computer');
             gameState.playersTurn = true;
-        }, 1000);
+        }, 500);
     }
 
     // sort gameState.gridValue based on values, eliminates occupied squares from result
@@ -165,6 +170,21 @@ $('document').ready(function () {
         } else {
             return false;
         }
+    }
+
+    function getRandom(min,max){
+        return Math.floor(Math.random()*(max-min)+min)-1;
+    }
+
+    function getBestMoves(moves){
+        var result = [];
+        var score = moves[0][1];
+        moves.forEach(function(element){
+            if(element[1] === score){
+                result.push(element);
+            }
+        });
+        return result;
     }
 
 
