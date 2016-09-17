@@ -9,7 +9,7 @@ $('document').ready(function () {
         y1x2: { value: 1, occupied: false },
         y1x3: { value: 2, occupied: false },
         y2x1: { value: 1, occupied: false },
-        y2x2: { value: 3, occupied: false },
+        y2x2: { value: 2, occupied: false },
         y2x3: { value: 1, occupied: false },
         y3x1: { value: 2, occupied: false },
         y3x2: { value: 1, occupied: false },
@@ -18,7 +18,7 @@ $('document').ready(function () {
 
     var gameState = {
         grid: $.extend(true, {}, BaseGrid),
-        playersTurn: true,
+        playersTurn: false,
         playerIcon: 'X',
         computerIcon: 'O',
         gameOver: false
@@ -27,6 +27,24 @@ $('document').ready(function () {
     //************
     // CLICK FUNCTIONS
     // ***********
+
+    // allow a player to choose an icon
+    $('.choose').click(function () {
+        // turn icon blue
+        $(this).css('color', 'lightblue');
+        var playerIcon = $(this).attr('data');
+        var computerIcon = $(this).siblings('.choose').attr('data');
+        // a half-second later turn other icon red
+        $(this).siblings('.choose').css('color', 'lightgreen');
+        // assing correct icon to player, and other to computer
+        gameState.playerIcon = playerIcon;
+        gameState.computerIcon = computerIcon;
+        // wait a second and then clear the message area 
+        setTimeout(function () {
+            $('#message-area').html('');
+            firstMove();
+        }, 500);
+    });
 
     // allow player to place an icon on the grid
     $('.gridrow li').click(function () {
@@ -48,20 +66,39 @@ $('document').ready(function () {
 
     // place an icon on the grid
     function placePiece(square, icon, player) {
-        $('#' + square).children('.square').html('<p>' + icon + '</p>');
+        $('#' + square).children('.square').html('<p class="' + player + '">' + icon + '</p>');
         // add square to occupied array, along with who occupied it
         gameState.grid[square].occupied = player;
         // check for win
         if (checkWin(player, gameState.grid)) {
-            console.log(player + ' wins!');
+            getMessage(player+'Wins');
             gameState.gameOver = true;
         }
         valueDiags();
     };
 
+    //turn winning pieces red
+    function changeRed(arr){
+        console.log('red!');
+        arr.forEach(function(square){
+            $('#'+square).css('color','red');
+        });
+    }
+
     //***************
     // GAME AI 
     //***************
+
+    function firstMove() {
+        var num = getRandom(1, 2);
+        if (num === 2) {
+            getMessage('goingFirst');
+            computerTurn();
+        }else{
+            getMessage('goingLast');
+            gameState.playersTurn = true;
+        }
+    }
 
     function computerTurn() {
         // don't do anything if game is over
@@ -73,7 +110,7 @@ $('document').ready(function () {
             var possibleMoves = sortGrid(gameState.grid);
             // check for a tie
             if (possibleMoves.length < 1) {
-                console.log("Darn, another tie");
+                getMessage('tieGame');
                 gameState.gameOver = true;
                 return;
             }
@@ -99,11 +136,16 @@ $('document').ready(function () {
             if (finished) { return; }
             // If not, it select randomly from the highest value moves
             var bestMoves = getBestMoves(possibleMoves);
-            var max=bestMoves.length;
-            var num = getRandom(1,max);
-            console.log(num);
-            console.log(bestMoves[num][0]);
+            var max = bestMoves.length;
+            var num = getRandom(1, max) - 1;
             placePiece(bestMoves[num][0], gameState.computerIcon, 'computer');
+            var possibleMoves = sortGrid(gameState.grid);
+            // check for a tie
+            if (possibleMoves.length < 1) {
+                console.log("Darn, another tie");
+                gameState.gameOver = true;
+                return;
+            }
             gameState.playersTurn = true;
         }, 500);
     }
@@ -172,15 +214,15 @@ $('document').ready(function () {
         }
     }
 
-    function getRandom(min,max){
-        return Math.floor(Math.random()*(max-min)+min)-1;
+    function getRandom(min, max) {
+        return Math.floor(Math.random() * max) + min;
     }
 
-    function getBestMoves(moves){
+    function getBestMoves(moves) {
         var result = [];
         var score = moves[0][1];
-        moves.forEach(function(element){
-            if(element[1] === score){
+        moves.forEach(function (element) {
+            if (element[1] === score) {
                 result.push(element);
             }
         });
@@ -192,34 +234,61 @@ $('document').ready(function () {
     function checkWin(player, grid) {
         // check  y1x1 diagonal
         if (grid.y1x1.occupied === player && grid.y2x2.occupied === player && grid.y3x3.occupied === player) {
+            changeRed(['y1x1','y2x2','y3x3']);
             return true;
         }
         // check y1x3 diagonal
         if (grid.y1x3.occupied === player && grid.y2x2.occupied === player && grid.y3x1.occupied === player) {
+            changeRed(['y1x3','y2x2','y3x1']);
             return true;
         }
         // check verticals
         if (grid.y1x1.occupied === player && grid.y2x1.occupied === player && grid.y3x1.occupied === player) {
+            changeRed(['y1x1','y2x1','y3x1']);
             return true;
         }
         if (grid.y1x2.occupied === player && grid.y2x2.occupied === player && grid.y3x2.occupied === player) {
+            changeRed(['y1x2','y2x2','y3x2']);
             return true;
         }
         if (grid.y1x3.occupied === player && grid.y2x3.occupied === player && grid.y3x3.occupied === player) {
+            changeRed(['y1x3','y2x3','y3x3']);
             return true;
         }
         // check horizontals
         if (grid.y1x1.occupied === player && grid.y1x2.occupied === player && grid.y1x3.occupied === player) {
+            changeRed(['y1x1','y1x2','y1x3']);
             return true;
         }
         if (grid.y2x1.occupied === player && grid.y2x2.occupied === player && grid.y2x3.occupied === player) {
+            changeRed(['y2x1','y2x2','y2x3']);
             return true;
         }
         if (grid.y3x1.occupied === player && grid.y3x2.occupied === player && grid.y3x3.occupied === player) {
+            changeRed(['y3x1','y3x2','y3x3']);
             return true;
         }
         return false;
     }
+
+    //*************
+    // MESSAGE FUNCTIONS
+    //*************
+    function getMessage(condition){
+        var max = messages[condition].length;
+        var num = getRandom(1,max)-1;
+        var msg = messages[condition][num];
+        console.log(msg);
+    }
+
+    var messages = {
+        goingFirst:["I will go first","I'll go first this time","Watch and Learn"],
+        goingLast:["I'll let you go first this time","You can go first, but it won't save you","I'm thinking about something else, you go first","You go first. Try not to think too long"],
+        noBestMove:["I see you've played this game before","Not bad... for a second grader","I hope you're paying attention...","Can you see what I'm planning?"],
+        playerWins:["I am humbled by your genius","Not bad... for a human","Vengeance will be mine","Inconceivable"],
+        computerWins:["I win...again","It was so cute when you challenged me to a game","A predictable outcome","What did you expect, organic life form?","You're not playing down to my level, are you?"],
+        tieGame:["A tie? In Tic Tac Toe? That hardly EVER happens","I may not have beaten you yet... give it time","About the best outcome you could have hoped for","Did you know Tic Tac Toe was invented in the dungeons of ancient China? Players would scratch their games on the wall, using severed toes for pens. That's where it gets the name.","In the Persian Empire, entire wars were settled with a game of Tic Tac Toe. The ties contributed to the stability of the region"]
+    };
 
 
 }); // end document.ready

@@ -4,6 +4,7 @@ html,body{
     width:100%;
     background-color:black;
     color:lightgreen;
+    overflow:hidden;
 };
 
 .container{
@@ -11,30 +12,30 @@ html,body{
     width:90%;
     padding:0;
     text-align:center;
-    margin:100px auto 0 auto;
+    margin:50px auto 0px auto;
 }
 
 .gameboard{
-    width:800px;
-    height:800px;
-    margin: 150px auto;
+    width:600px;
+    height:500px;
+    margin: 25px auto;
 }
 
 .gameboard ul{
     position:relative;
     padding:0;
     margin:0;
-    left:15%;
+    left:12%;
 }
 
 .gridrow li{
     display:inline-block;
     border-right:2px solid lightgreen;
     border-bottom:2px solid lightgreen;
-    height:200px;
-    width:200px;
-    max-height:200px;
-    max-width:200px;
+    height:150px;
+    width:150px;
+    max-height:150px;
+    max-width:150px;
     margin:0;
     padding:0;
     overflow:hidden;
@@ -54,12 +55,36 @@ html,body{
 }
 
 .square{
-    z-index: 5;
+
     overflow:hidden;
     font-family:Arial, Helvetica, sans-serif;
-    font-size:170px;
+    font-size:125px;
 }
 
 .square p{
     margin-top:5px;
+}
+
+#message-area{
+    height:200px;
+    font-family: Arial, Helvetica, sans-serif;
+    color:silver;
+    text-align: center;
+    padding-top:20px;
+
+}
+
+.choose{
+    border:1px solid lightgreen;
+    margin:0 30px 0 30px;
+    font-size:100px;
+    padding:0 20px 0 20px;
+}
+
+.player{
+    color:lightblue;
+}
+
+.computer{
+    color:lightgreen;
 }
