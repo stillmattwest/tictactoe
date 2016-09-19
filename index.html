@@ -9,25 +9,27 @@
     <div class='container'>
         <div class='gameboard'>
             <ul id='row1' class='gridrow'>
-                <li id='y1x1' data-x='1' data-y='1' data-occupied='false'><span class='square'></span></li>
-                <li id='y1x2' data-x='2' data-y='1' data-occupied='false'><span class='square'></span></li>
-                <li id='y1x3' data-x='3' data-y='1' data-occupied='false'><span class='square'></span></li>
+                <li id='y1x1'><span class='square'></span></li>
+                <li id='y1x2'><span class='square'></span></li>
+                <li id='y1x3'><span class='square'></span></li>
             </ul>
             <ul id='row2' class='gridrow'>
-                <li id='y2x1' data-x='1' data-y='2' data-occupied='false'><span class='square'></span></li>
-                <li id='y2x2' data-x='2' data-y='2' data-occupied='false'><span class='square'></span></li>
-                <li id='y2x3' data-x='3' data-y='2' data-occupied='false'><span class='square'></span></li>
+                <li id='y2x1'><span class='square'></span></li>
+                <li id='y2x2'><span class='square'></span></li>
+                <li id='y2x3'><span class='square'></span></li>
             </ul>
             <ul id='row3' class='gridrow'>
-                <li id='y3x1' data-x='1' data-y='3' data-occupied='false'><span class='square'></span></li>
-                <li id='y3x2' data-x='2' data-y='3' data-occupied='false'><span class='square'></span></li>
-                <li id='y3x3' data-x='3' data-y='3' data-occupied='false'><span class='square'></span></li>
+                <li id='y3x1'><span class='square'></span></li>
+                <li id='y3x2'><span class='square'></span></li>
+                <li id='y3x3'><span class='square'></span></li>
             </ul>
         </div>
         <div id='message-area'>
-        <h1><span class='choose' data='X'>X</span>CHOOSE<span class= 'choose' data='O'>O</span></h1>
-        </div>    
-    </div>
-    <!-- scripts below here -->
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
-    <script src='client.js'></script>
+            <h1><span class='choose' data='X'>X</span>CHOOSE<span class='choose' data='O'>O</span></h1>
+        </div>
+        <div class='reset-area'>
+            <button id='reset'>RESET</button>
+        </div>
+        <!-- scripts below here -->
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
+        <script src='client.js'></script>
