@@ -22,7 +22,7 @@ $('document').ready(function () {
         playerIcon: 'X',
         computerIcon: 'O',
         gameOver: false,
-        winningArr:[]
+        winningArr: []
     }
 
     //************
@@ -47,18 +47,6 @@ $('document').ready(function () {
         }, 500);
     });
 
-    $('#reset').click(function(){
-        for(var key in gameState.grid){
-            $('#'+key).children('.square').removeClass('win');
-        }
-        gameState.grid = $.extend(true, {}, BaseGrid);
-        gameState.gameOver = false;
-        gameState.playersTurn = false;
-        gameState.winningArr=[];
-        clearBoard();
-        firstMove();
-    })
-
     // allow player to place an icon on the grid
     $('.gridrow li').click(function () {
         if (gameState.playersTurn === true && gameState.gameOver === false) {
@@ -67,7 +55,12 @@ $('document').ready(function () {
             if (!checkOccupied(square)) {
                 placePiece(square, piece, 'player');
                 gameState.playersTurn = false;
+                var talkOrNot = getRandom(1, 10);
+                if (talkOrNot > 5) {
+                    getMessage('noBestMove');
+                }
                 computerTurn();
+                
             }
         }
     });
@@ -87,6 +80,7 @@ $('document').ready(function () {
             getMessage(player + 'Wins');
             changeRed(gameState.winningArr);
             gameState.gameOver = true;
+            reset();
         }
         valueDiags();
     };
@@ -98,13 +92,28 @@ $('document').ready(function () {
         });
     }
 
-    function clearBoard(){
+    function clearBoard() {
         var square;
-        for(var key in gameState.grid){
+        for (var key in gameState.grid) {
             square = key;
-            $('#'+square).children('.square').html('');
+            $('#' + square).children('.square').html('');
         }
     }
+
+    function reset() {
+        // wait three seconds and reset
+        setTimeout(function () {
+            for (var key in gameState.grid) {
+                $('#' + key).children('.square').removeClass('win');
+            }
+            gameState.grid = $.extend(true, {}, BaseGrid);
+            gameState.gameOver = false;
+            gameState.playersTurn = false;
+            gameState.winningArr = [];
+            clearBoard();
+            firstMove();
+        }, 3000);
+    };
 
     //***************
     // GAME AI 
@@ -114,14 +123,15 @@ $('document').ready(function () {
         var num = getRandom(1, 2);
         if (num === 2) {
             getMessage('goingFirst');
-            setTimeout(function(){
-            computerTurn();
-            },1000);
+            setTimeout(function () {
+                computerTurn();
+            }, 1000);
         } else {
             getMessage('goingLast');
             gameState.playersTurn = true;
         }
     }
+
 
     function computerTurn() {
         // don't do anything if game is over
@@ -135,6 +145,7 @@ $('document').ready(function () {
             if (possibleMoves.length < 1) {
                 getMessage('tieGame');
                 gameState.gameOver = true;
+                reset();
                 return;
             }
             // Computer checks to see if it can win. If so, it does.
@@ -157,17 +168,17 @@ $('document').ready(function () {
 
             }
             if (finished) { return; }
-            // If not, it select randomly from the highest value moves
+            // If not, it selects randomly from the highest value moves
             var bestMoves = getBestMoves(possibleMoves);
             var max = bestMoves.length;
             var num = getRandom(1, max) - 1;
             placePiece(bestMoves[num][0], gameState.computerIcon, 'computer');
-            getMessage('noBestMove');
             //check for a tie
             var possibleMoves = sortGrid(gameState.grid);
             if (possibleMoves.length < 1) {
                 getMessage('tieGame');
                 gameState.gameOver = true;
+                reset();
                 return;
             }
             gameState.playersTurn = true;
@@ -211,7 +222,7 @@ $('document').ready(function () {
         if (occupiedDiags > 0 && checkOccupied('y2x2') === false) {
             gameState.grid.y2x2.value++;
 
-        } else if (occupiedDiags > 2) {
+        } else if ((occupiedDiags > 0 && checkOccupied('y2x2')) || occupiedDiags > 2) {
             gameState.grid.y1x1.value = 0;
             gameState.grid.y3x1.value = 0;
             gameState.grid.y1x3.value = 0;
@@ -261,38 +272,38 @@ $('document').ready(function () {
     function checkWin(player, grid) {
         // check  y1x1 diagonal
         if (grid.y1x1.occupied === player && grid.y2x2.occupied === player && grid.y3x3.occupied === player) {
-            gameState.winningArr=['y1x1', 'y2x2', 'y3x3'];
+            gameState.winningArr = ['y1x1', 'y2x2', 'y3x3'];
             return true;
         }
         // check y1x3 diagonal
         if (grid.y1x3.occupied === player && grid.y2x2.occupied === player && grid.y3x1.occupied === player) {
-            gameState.winningArr=['y1x3', 'y2x2', 'y3x1'];
+            gameState.winningArr = ['y1x3', 'y2x2', 'y3x1'];
             return true;
         }
         // check verticals
         if (grid.y1x1.occupied === player && grid.y2x1.occupied === player && grid.y3x1.occupied === player) {
-            gameState.winningArr=['y1x1', 'y2x1', 'y3x1'];
+            gameState.winningArr = ['y1x1', 'y2x1', 'y3x1'];
             return true;
         }
         if (grid.y1x2.occupied === player && grid.y2x2.occupied === player && grid.y3x2.occupied === player) {
-            gameState.winningArr=['y1x2', 'y2x2', 'y3x2'];
+            gameState.winningArr = ['y1x2', 'y2x2', 'y3x2'];
             return true;
         }
         if (grid.y1x3.occupied === player && grid.y2x3.occupied === player && grid.y3x3.occupied === player) {
-            gameState.winningArr=['y1x3', 'y2x3', 'y3x3'];
+            gameState.winningArr = ['y1x3', 'y2x3', 'y3x3'];
             return true;
         }
         // check horizontals
         if (grid.y1x1.occupied === player && grid.y1x2.occupied === player && grid.y1x3.occupied === player) {
-            gameState.winningArr=['y1x1', 'y1x2', 'y1x3'];
+            gameState.winningArr = ['y1x1', 'y1x2', 'y1x3'];
             return true;
         }
         if (grid.y2x1.occupied === player && grid.y2x2.occupied === player && grid.y2x3.occupied === player) {
-            gameState.winningArr=['y2x1', 'y2x2', 'y2x3'];
+            gameState.winningArr = ['y2x1', 'y2x2', 'y2x3'];
             return true;
         }
         if (grid.y3x1.occupied === player && grid.y3x2.occupied === player && grid.y3x3.occupied === player) {
-            gameState.winningArr=['y3x1', 'y3x2', 'y3x3'];
+            gameState.winningArr = ['y3x1', 'y3x2', 'y3x3'];
             return true;
         }
         return false;
@@ -305,7 +316,7 @@ $('document').ready(function () {
         var max = messages[condition].length;
         var num = getRandom(1, max) - 1;
         var msg = messages[condition][num];
-        $('#message-area').html('<h2>'+msg+'</h2>');
+        $('#message-area').html('<h2>' + msg + '</h2>');
     }
 
     var messages = {
