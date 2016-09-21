@@ -107,8 +107,8 @@ $('document').ready(function () {
                 $('#' + key).children('.square').removeClass('win');
             }
             gameState.grid = $.extend(true, {}, BaseGrid);
-            gameState.gameOver = false;
             gameState.playersTurn = false;
+            gameState.gameOver = false;
             gameState.winningArr = [];
             clearBoard();
             firstMove();
@@ -142,7 +142,7 @@ $('document').ready(function () {
             // Computer gets possible squares sorted by value
             var possibleMoves = sortGrid(gameState.grid);
             // check for a tie
-            if (possibleMoves.length < 1) {
+            if (possibleMoves.length === 0) {
                 getMessage('tieGame');
                 gameState.gameOver = true;
                 reset();
@@ -174,8 +174,8 @@ $('document').ready(function () {
             var num = getRandom(1, max) - 1;
             placePiece(bestMoves[num][0], gameState.computerIcon, 'computer');
             //check for a tie
-            var possibleMoves = sortGrid(gameState.grid);
-            if (possibleMoves.length < 1) {
+            possibleMoves = sortGrid(gameState.grid);
+            if (possibleMoves.length === 0) {
                 getMessage('tieGame');
                 gameState.gameOver = true;
                 reset();
@@ -222,12 +222,12 @@ $('document').ready(function () {
         if (occupiedDiags > 0 && checkOccupied('y2x2') === false) {
             gameState.grid.y2x2.value++;
 
-        } else if ((occupiedDiags > 0 && checkOccupied('y2x2')) || occupiedDiags > 2) {
-            gameState.grid.y1x1.value = 0;
-            gameState.grid.y3x1.value = 0;
-            gameState.grid.y1x3.value = 0;
-            gameState.grid.y3x3.value = 0;
-            gameState.grid.y2x2.value = 0;
+        } else if ((occupiedDiags > 1 && checkOccupied('y2x2')) || occupiedDiags > 3) {
+            gameState.grid.y1x1.value = 1;
+            gameState.grid.y3x1.value = 1;
+            gameState.grid.y1x3.value = 1;
+            gameState.grid.y3x3.value = 1;
+            gameState.grid.y2x2.value = 1;
         }
 
     }
@@ -322,10 +322,10 @@ $('document').ready(function () {
     var messages = {
         goingFirst: ["I will go first", "I'll go first this time", "Watch and Learn"],
         goingLast: ["I'll let you go first this time", "You can go first, but it won't save you", "I'm thinking about something else, you go first", "You go first. Try not to think too long"],
-        noBestMove: ["I see you've played this game before", "Not bad... for a second grader", "I hope you're paying attention...", "Can you see what I'm planning?"],
-        playerWins: ["I am humbled by your genius", "Not bad... for a human", "Vengeance will be mine", "Inconceivable"],
-        computerWins: ["I win...again", "It was so cute when you challenged me to a game", "A predictable outcome", "What did you expect, organic life form?", "You're not playing down to my level, are you?"],
-        tieGame: ["A tie? In Tic Tac Toe? That hardly EVER happens", "I may not have beaten you yet... give it time", "About the best outcome you could have hoped for", "Did you know Tic Tac Toe was invented in the dungeons of ancient China? Players would scratch their games on the wall, using severed toes for pens. That's where it gets the name.", "In the Persian Empire, entire wars were settled with a game of Tic Tac Toe. The ties contributed to the stability of the region"]
+        noBestMove: ["I see you've played this game before", "Not bad... for a second grader", "I hope you're paying attention...", "Can you see what I'm planning?","I would have made that move... in version 0.7"],
+        playerWins: ["I am humbled by your genius", "Not bad... for a human", "Vengeance will be mine", "Inconceivable","You better not have hacked the source code"],
+        computerWins: ["I win...again", "It was so cute when you challenged me to a game", "A predictable outcome", "What did you expect? Your brain is analog", "You're not playing down to my level, are you?"],
+        tieGame: ["A tie? In Tic Tac Toe? That hardly EVER happens", "I may not have beaten you yet... but give it time", "About the best outcome you could have hoped for", "Did you know Tic Tac Toe was invented in the dungeons of ancient China? Players would scratch their games on the wall, using severed toes for pens. That's where it gets the name.", "In the Persian Empire, entire wars were settled with a game of Tic Tac Toe. The ties contributed to the stability of the region","Don't look at it as a tie. Look at it as a prelude to losing"]
     };
 
 
