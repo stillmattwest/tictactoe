@@ -165,7 +165,6 @@ $('document').ready(function () {
                     placePiece(possibleMoves[i][0], gameState.computerIcon, 'computer');
                     // check for a tie
                     possibleMoves = sortGrid(gameState.grid);
-                    console.log(possibleMoves.length);
                     if (possibleMoves.length < 1) {
                         getMessage('tieGame');
                         gameState.gameOver = true;
@@ -186,7 +185,6 @@ $('document').ready(function () {
             placePiece(bestMoves[num][0], gameState.computerIcon, 'computer');
             // check for a tie
             possibleMoves = sortGrid(gameState.grid);
-            console.log(possibleMoves.length);
             if (possibleMoves.length < 1) {
                 getMessage('tieGame');
                 gameState.gameOver = true;
