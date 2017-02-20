@@ -134,6 +134,14 @@ $('document').ready(function () {
 
 
     function computerTurn() {
+        //check for a tie
+            possibleMoves = sortGrid(gameState.grid);
+            if (possibleMoves.length === 0) {
+                getMessage('tieGame');
+                gameState.gameOver = true;
+                reset();
+                return;
+            }
         // don't do anything if game is over
         if (gameState.gameOver === true) { return; };
         //wait a second before making a move
@@ -313,7 +321,7 @@ $('document').ready(function () {
     // MESSAGE FUNCTIONS
     //*************
     function getMessage(condition) {
-        var max = messages[condition].length;
+        var max = messages[condition].length -1;
         var num = getRandom(1, max) - 1;
         var msg = messages[condition][num];
         $('#message-area').html('<h2>' + msg + '</h2>');
